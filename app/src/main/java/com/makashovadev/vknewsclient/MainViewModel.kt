@@ -6,20 +6,42 @@ import androidx.lifecycle.ViewModel
 import com.makashovadev.vknewsclient.domain.FeedPost
 import com.makashovadev.vknewsclient.domain.StatisticItem
 
-class MainViewModel: ViewModel() {
-    private val _feedPost = MutableLiveData(FeedPost())
-    val feedPost: LiveData<FeedPost> = _feedPost
+class MainViewModel : ViewModel() {
+    private val sourceList = mutableListOf<FeedPost>().apply {
+        repeat(10) {
+            add(FeedPost(id = it))
+        }
 
-    fun updateCount(item: StatisticItem) {
-        val oldStatistic = feedPost.value?.statistics ?: throw IllegalStateException("No such statistic type")
+    }
+
+    private val _feedPosts = MutableLiveData<List<FeedPost>>(sourceList)
+    val feedPosts: LiveData<List<FeedPost>> = _feedPosts
+
+    fun updateCount(feedPost: FeedPost, item: StatisticItem) {
+        val oldPosts = feedPosts.value?.toMutableList() ?: mutableListOf()
+        val oldStatistic = feedPost.statistics
         val newStatistic = oldStatistic.toMutableList().apply {
-            replaceAll{ oldItem ->
+            replaceAll { oldItem ->
                 if (oldItem.type == item.type)
-                    oldItem.copy(count = oldItem.count+1)
+                    oldItem.copy(count = oldItem.count + 1)
                 else oldItem
             }
         }
-        _feedPost.value = feedPost.value?.copy(statistics = newStatistic)
+        val newFeedPost = feedPost.copy(statistics = newStatistic)
+        _feedPosts.value = oldPosts.apply {
+            replaceAll {
+                if (it.id == newFeedPost.id)
+                    newFeedPost
+                else
+                    it
+            }
+        }
+    }
+
+    fun remove(feedPost: FeedPost) {
+        val oldPosts = feedPosts.value?.toMutableList() ?: mutableListOf()
+        oldPosts.remove(feedPost)
+        _feedPosts.value = oldPosts
     }
 
 }
