@@ -23,8 +23,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             VkNewsClientTheme {
                 HomeScreen(
-                    viewModel,
-                    paddingValues
+                    viewModel = viewModel,
+                    paddingValues = paddingValues
                 )
             }
         }
