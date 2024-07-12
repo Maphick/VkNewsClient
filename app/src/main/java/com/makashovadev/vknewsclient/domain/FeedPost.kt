@@ -4,6 +4,7 @@ import androidx.compose.ui.res.stringResource
 import com.makashovadev.vknewsclient.R
 
 data class FeedPost(
+    val id: Int = 0,
     val communityName: String = R.string.community_name.toString(),
     val publicationDate: String = "14:00",
     val avatarResId: Int = R.drawable.post_comunity_thumbnail,
