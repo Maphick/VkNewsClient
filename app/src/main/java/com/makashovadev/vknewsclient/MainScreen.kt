@@ -23,9 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.makashovadev.vknewsclient.domain.FeedPost
+import com.makashovadev.vknewsclient.domain.PostComment
 import com.makashovadev.vknewsclient.domain.StatisticItem
+import com.makashovadev.vknewsclient.ui.theme.CommentsScreen
 import com.makashovadev.vknewsclient.ui.theme.PostCard
 import com.makashovadev.vknewsclient.ui.theme.VkNewsClientTheme
+import org.w3c.dom.Comment
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -37,23 +40,27 @@ fun MainScreen(viewModel: MainViewModel) {
             .padding(8.dp)
     ) {
         val feedPosts = viewModel.feedPosts.observeAsState(listOf())
-
+        if (feedPosts.value.isNotEmpty()) {
+            val comments = mutableListOf<PostComment>().apply {
+                repeat(20)
+                {
+                    add(
+                        PostComment(id = it)
+                    )
+                }
+            }
+            CommentsScreen(feedPosts.value.get(0), comments)
+        }
+/*
         LazyColumn(
             //modifier = Modifier.padding(it),
             contentPadding = PaddingValues(
-                top = 16.dp,
-                start = 8.dp,
-                end = 8.dp,
-                bottom = 72.dp // для нижней навигации
-            ),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                top = 16.dp, start = 8.dp, end = 8.dp, bottom = 72.dp // для нижней навигации
+            ), verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(
-                items = feedPosts.value,
-                key = { it.id }
-            )
-            { feedPost ->
-                val dismissState = rememberDismissState() // разный стейт для каждой компоузебл функции,
+            items(items = feedPosts.value, key = { it.id }) { feedPost ->
+                val dismissState =
+                    rememberDismissState() // разный стейт для каждой компоузебл функции,
                 // которую отображает LazyColumn
                 if (dismissState.isDismissed(DismissDirection.EndToStart)) {
                     viewModel.remove(feedPost)
@@ -65,26 +72,21 @@ fun MainScreen(viewModel: MainViewModel) {
                     dismissContent = {
                         PostCard(
                             //modifier = Modifier.padding(8.dp),
-                            feedPost = feedPost,
-                            onLikeClickListener = { statisticItem ->
+                            feedPost = feedPost, onLikeClickListener = { statisticItem ->
                                 viewModel.updateCount(feedPost, statisticItem)
-                            },
-                            onShareClickListener = { statisticItem ->
+                            }, onShareClickListener = { statisticItem ->
                                 viewModel.updateCount(feedPost, statisticItem)
-                            },
-                            onViewsClickListener = { statisticItem ->
+                            }, onViewsClickListener = { statisticItem ->
                                 viewModel.updateCount(feedPost, statisticItem)
-                            },
-                            onCommentClickListener = { statisticItem ->
+                            }, onCommentClickListener = { statisticItem ->
                                 viewModel.updateCount(feedPost, statisticItem)
-                            }
-                        )
+                            })
                     },
                     directions = setOf(DismissDirection.EndToStart)
                 )
             }
         }
-
+*/
 
     }
 }

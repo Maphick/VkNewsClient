@@ -11,7 +11,6 @@ class MainViewModel : ViewModel() {
         repeat(10) {
             add(FeedPost(id = it))
         }
-
     }
 
     private val _feedPosts = MutableLiveData<List<FeedPost>>(sourceList)
