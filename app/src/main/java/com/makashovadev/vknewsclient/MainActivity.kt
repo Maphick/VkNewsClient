@@ -6,13 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
+import com.makashovadev.vknewsclient.domain.FeedPost
+import com.makashovadev.vknewsclient.ui.theme.CommentsScreen
 import com.makashovadev.vknewsclient.ui.theme.HomeScreen
 import com.makashovadev.vknewsclient.ui.theme.VkNewsClientTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<NewsFeedViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,10 +27,22 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             VkNewsClientTheme {
-                HomeScreen(
-                    viewModel = viewModel,
-                    paddingValues = paddingValues
-                )
+                //val navigationState = rememberNavigationState()
+                val commentsToPost: MutableState<FeedPost?>  = remember {
+                    mutableStateOf(null)
+                }
+                if (commentsToPost.value == null) {
+                    HomeScreen(
+                        paddingValues = paddingValues,
+                        onCommentClickListener = {
+                            commentsToPost.value = it
+                        }
+                    )
+                } else {
+                    CommentsScreen {
+                        commentsToPost.value = null
+                    }
+                }
             }
         }
     }
