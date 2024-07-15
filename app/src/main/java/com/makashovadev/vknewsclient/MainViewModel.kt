@@ -1,13 +1,21 @@
 package com.makashovadev.vknewsclient
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.makashovadev.vknewsclient.domain.FeedPost
+import com.makashovadev.vknewsclient.domain.PostComment
 import com.makashovadev.vknewsclient.domain.StatisticItem
 import com.makashovadev.vknewsclient.ui.theme.HomeScreenState
 
 class MainViewModel : ViewModel() {
+
+    private  val comments = mutableListOf<PostComment>().apply {
+        repeat(20){
+            add(PostComment(id = it))
+        }
+    }
     private val sourceList = mutableListOf<FeedPost>().apply {
         repeat(10) {
             add(FeedPost(id = it))
@@ -18,6 +26,19 @@ class MainViewModel : ViewModel() {
 
     private val _screenState = MutableLiveData<HomeScreenState>(initialState)
     val screenState: LiveData<HomeScreenState> = _screenState
+
+    private  var savedState: HomeScreenState? = initialState
+    fun showComments(feedPost: FeedPost)
+    {
+        savedState = _screenState.value
+        _screenState.value = HomeScreenState.Comments(feedPost = feedPost, comments = comments)
+    }
+
+    @SuppressLint("NullSafeMutableLiveData")
+    fun closeComments()
+    {
+        _screenState.value = savedState
+    }
 
     fun updateCount(feedPost: FeedPost, item: StatisticItem) {
         val currentState = screenState.value
