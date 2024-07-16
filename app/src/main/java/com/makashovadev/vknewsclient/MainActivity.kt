@@ -16,9 +16,6 @@ import com.makashovadev.vknewsclient.ui.theme.HomeScreen
 import com.makashovadev.vknewsclient.ui.theme.VkNewsClientTheme
 
 class MainActivity : ComponentActivity() {
-
-    private val viewModel by viewModels<NewsFeedViewModel>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,13 +36,16 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 } else {
-                    CommentsScreen {
-                        commentsToPost.value = null
+                    CommentsScreen (
+                        onBackPressed = {
+                            commentsToPost.value = null
+                        },
+                        feedPost = commentsToPost.value!!
+                    )
+
                     }
                 }
             }
         }
     }
-
-}
 

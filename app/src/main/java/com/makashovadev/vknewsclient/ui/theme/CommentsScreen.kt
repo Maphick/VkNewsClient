@@ -1,5 +1,6 @@
 package com.makashovadev.vknewsclient.ui.theme
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.makashovadev.vknewsclient.CommentsViewModel
+import com.makashovadev.vknewsclient.CommentsViewModelFactory
 import com.makashovadev.vknewsclient.R
 import com.makashovadev.vknewsclient.domain.FeedPost
 import com.makashovadev.vknewsclient.domain.PostComment
@@ -38,11 +39,18 @@ import com.makashovadev.vknewsclient.domain.PostComment
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentsScreen(
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    feedPost: FeedPost
 ) {
-    val viewModel: CommentsViewModel = viewModel()
+    val viewModel: CommentsViewModel = viewModel(
+        factory = CommentsViewModelFactory(feedPost)
+    )
+    //viewModel.LoadComments(FeedPost())
+
     val screenState = viewModel.screenState.observeAsState(CommentsScreenState.Initial)
     val currentState = screenState.value
+    Log.d("TEST_TEST", "CommentsScreen")
+
     if (currentState is CommentsScreenState.Comments) {
         Scaffold(
             topBar = {
