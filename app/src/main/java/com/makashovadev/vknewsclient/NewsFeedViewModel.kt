@@ -14,8 +14,9 @@ class NewsFeedViewModel : ViewModel() {
             add(FeedPost(id = it))
         }
     }
+
     // исходный стейт
-    private val initialState =  NewsFeedScreenState.Posts(posts = sourceList)
+    private val initialState = NewsFeedScreenState.Posts(posts = sourceList)
 
     private val _screenState = MutableLiveData<NewsFeedScreenState>(initialState)
     val screenState: LiveData<NewsFeedScreenState> = _screenState
@@ -35,7 +36,7 @@ class NewsFeedViewModel : ViewModel() {
             }
         }
         val newFeedPost = feedPost.copy(statistics = newStatistic)
-        val newPosts  = oldPosts.apply {
+        val newPosts = oldPosts.apply {
             replaceAll {
                 if (it.id == newFeedPost.id)
                     newFeedPost

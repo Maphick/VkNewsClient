@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,10 +24,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,8 +49,6 @@ fun CommentsScreen(
     val viewModel: CommentsViewModel = viewModel(
         factory = CommentsViewModelFactory(feedPost)
     )
-    //viewModel.LoadComments(FeedPost())
-
     val screenState = viewModel.screenState.observeAsState(CommentsScreenState.Initial)
     val currentState = screenState.value
     Log.d("TEST_TEST", "CommentsScreen")
@@ -54,9 +56,17 @@ fun CommentsScreen(
     if (currentState is CommentsScreenState.Comments) {
         Scaffold(
             topBar = {
-                TopAppBar(
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        // containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
                     title = {
-                        Text(text = "Comments for FeedPost id: ${currentState.feedPost.id}")
+                        Text(
+                            text = "Comments for FeedPost id: ${currentState.feedPost.id}",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     },
                     navigationIcon = {
                         IconButton(onClick = { onBackPressed() }) {
@@ -67,6 +77,7 @@ fun CommentsScreen(
                         }
                     }
                 )
+
             }
         )
         { paddingsValues ->
