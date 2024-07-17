@@ -163,7 +163,6 @@ private fun PostHeader(feedPost: FeedPost)
     Row(
         modifier = Modifier
             .fillMaxWidth(),
-           // .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -208,6 +207,6 @@ fun PreviewLight() {
 @Composable
 fun PreviewDark() {
     VkNewsClientTheme(darkTheme = true) {
-       // PostCard()
+        // PostCard()
     }
 }

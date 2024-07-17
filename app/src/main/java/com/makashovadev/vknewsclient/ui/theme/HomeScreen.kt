@@ -32,32 +32,24 @@ import com.makashovadev.vknewsclient.domain.PostComment
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    paddingValues: PaddingValues,
-    onCommentClickListener: (FeedPost) -> Unit
+    paddingValues: PaddingValues, onCommentClickListener: (FeedPost) -> Unit
 ) {
-    val viewModel: NewsFeedViewModel = viewModel( )
-    //val viewModel = ViewModelProvider(LocalViewModelStoreOwner.current!!)[NewsFeedViewModel::class.java]
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(8.dp)
-    ) {
-        // стейт экрана: список сетей или список устройств
-        val screenState = viewModel.screenState.observeAsState(NewsFeedScreenState.Initial)
+    val viewModel: NewsFeedViewModel = viewModel()
+    // стейт экрана: список сетей или список устройств
+    val screenState = viewModel.screenState.observeAsState(NewsFeedScreenState.Initial)
 
-        when (val currentState = screenState.value) {
+    when (val currentState = screenState.value) {
 
-            is NewsFeedScreenState.Posts -> {
-                FeedPosts(
-                    viewModel = viewModel,
-                    paddingValues = paddingValues,
-                    posts = currentState.posts,
-                    onCommentCliclListener = onCommentClickListener
-                )
-            }
-            is NewsFeedScreenState.Initial -> {}
+        is NewsFeedScreenState.Posts -> {
+            FeedPosts(
+                viewModel = viewModel,
+                paddingValues = paddingValues,
+                posts = currentState.posts,
+                onCommentCliclListener = onCommentClickListener
+            )
         }
+
+        is NewsFeedScreenState.Initial -> {}
     }
 }
 
@@ -72,12 +64,10 @@ fun FeedPosts(
     onCommentCliclListener: (FeedPost) -> Unit
 ) {
     LazyColumn(
-        contentPadding = paddingValues,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = paddingValues, verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(items = posts, key = { it.id }) { feedPost ->
-            val dismissState =
-                rememberDismissState() // разный стейт для каждой компоузебл функции,
+            val dismissState = rememberDismissState() // разный стейт для каждой компоузебл функции,
             // которую отображает LazyColumn
             if (dismissState.isDismissed(DismissDirection.EndToStart)) {
                 viewModel.remove(feedPost)
@@ -87,19 +77,15 @@ fun FeedPosts(
                 state = dismissState,
                 background = {},
                 dismissContent = {
-                    PostCard(
-                        feedPost = feedPost,
-                        onLikeClickListener = { statisticItem ->
-                            viewModel.updateCount(feedPost, statisticItem)
-                        }, onShareClickListener = { statisticItem ->
-                            viewModel.updateCount(feedPost, statisticItem)
-                        }, onViewsClickListener = { statisticItem ->
-                            viewModel.updateCount(feedPost, statisticItem)
-                        }, onCommentClickListener = { statisticItem ->
-                            onCommentCliclListener(feedPost)
-                            //viewModel.showComments(feedPost)
-                            //viewModel.updateCount(feedPost, statisticItem)
-                        })
+                    PostCard(feedPost = feedPost, onLikeClickListener = { statisticItem ->
+                        viewModel.updateCount(feedPost, statisticItem)
+                    }, onShareClickListener = { statisticItem ->
+                        viewModel.updateCount(feedPost, statisticItem)
+                    }, onViewsClickListener = { statisticItem ->
+                        viewModel.updateCount(feedPost, statisticItem)
+                    }, onCommentClickListener = { statisticItem ->
+                        onCommentCliclListener(feedPost)
+                    })
                 },
                 directions = setOf(DismissDirection.EndToStart)
             )
